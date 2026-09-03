@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ops Dashboard - Support</title>
+		<style>
+			body {
+				font-family:
+					-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+					Arial, sans-serif;
+				background-color: #f0f4f8;
+				margin: 0;
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+				min-height: 100vh;
+				padding: 60px 20px;
+				box-sizing: border-box;
+			}
+			.dashboard {
+				width: 100%;
+				max-width: 460px;
+			}
+			.tab-nav {
+				display: flex;
+				gap: 6px;
+				margin-bottom: 14px;
+				background-color: #e2e8f0;
+				border-radius: 10px;
+				padding: 4px;
+			}
+			.tab-nav a {
+				flex: 1;
+				text-align: center;
+				padding: 8px 0;
+				border-radius: 7px;
+				font-size: 0.8rem;
+				font-weight: 600;
+				text-decoration: none;
+				color: #627d98;
+			}
+			.tab-nav a.current {
+				background-color: #ffffff;
+				color: #1d3557;
+				box-shadow: 0 1px 3px rgba(29, 53, 87, 0.15);
+			}
+			.card {
+				background-color: #ffffff;
+				border-radius: 16px;
+				padding: 32px;
+				box-shadow: 0 10px 25px rgba(29, 53, 87, 0.1);
+				border: 1px solid #e1e8ed;
+				box-sizing: border-box;
+			}
+			.card h1 {
+				font-size: 1.4rem;
+				color: #1d3557;
+				margin: 0 0 4px 0;
+				font-weight: 700;
+			}
+			.card .subtitle {
+				color: #627d98;
+				margin: 0 0 24px 0;
+				font-size: 0.9rem;
+			}
+			.ticket-row {
+				display: flex;
+				align-items: center;
+				gap: 14px;
+				background-color: #f7fafc;
+				border-radius: 10px;
+				padding: 16px;
+				margin-bottom: 16px;
+				transition: all 0.4s ease;
+				border: 1px solid transparent;
+			}
+			.ticket-icon {
+				font-size: 1.8rem;
+				line-height: 1;
+				transition: transform 0.3s ease;
+			}
+			.ticket-info .ref {
+				font-size: 0.75rem;
+				color: #a0aec0;
+				font-weight: 600;
+				text-transform: uppercase;
+				transition: color 0.4s ease;
+			}
+			.ticket-info .subject {
+				font-size: 0.95rem;
+				color: #2d3748;
+				font-weight: 600;
+				transition: all 0.4s ease;
+			}
+			.ticket-row.state-resolved {
+				background-color: #f0fdf4;
+				border-color: #bbf7d0;
+				opacity: 0.85;
+			}
+			.ticket-row.state-resolved .ticket-info .subject {
+				color: #718096;
+				text-decoration: line-through;
+			}
+			.ticket-row.state-resolved .ticket-info .ref {
+				color: #81c784;
+			}
+
+			.status-summary {
+				background-color: #f7fafc;
+				border-radius: 8px;
+				padding: 12px 16px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 0.9rem;
+				color: #4a5568;
+			}
+			.status-badge {
+				font-weight: 700;
+				font-size: 0.8rem;
+				padding: 4px 12px;
+				border-radius: 6px;
+				text-transform: uppercase;
+			}
+			.badge-pending {
+				color: #742a2a;
+				background-color: #fff5f5;
+			}
+			.badge-resolved {
+				color: #22543d;
+				background-color: #c6f6d5;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="dashboard">
+			<nav class="tab-nav">
+				<a href="warehouse-status.html">Warehouse</a>
+				<a href="shipping-status.html">Shipping</a>
+				<a href="support-queue.html" class="current">Support</a>
+			</nav>
+
+			<div class="card">
+				<h1>Support Queue</h1>
+				<p class="subtitle">Ticket #TCK-3391</p>
+				<div class="ticket-row" id="ticketRow">
+					<div class="ticket-icon" id="ticketIcon">🎫</div>
+					<div class="ticket-info">
+						<div class="ref">Opened by E. Kahacho</div>
+						<div class="subject">Payment not reflecting on account</div>
+					</div>
+				</div>
+
+				<div class="status-summary">
+					<span>Current Status:</span>
+					<span class="status-badge" id="statusBadge">Pending</span>
+				</div>
+			</div>
+		</div>
+		<script>
+			const RESET_AFTER = 60 * 1000; // 1 minute
+			let refreshCount = Number(
+				localStorage.getItem('supportRefreshCount') || 0,
+			);
+			let startedAt = Number(localStorage.getItem('supportStartedAt') || 0);
+
+			if (!startedAt || Date.now() - startedAt >= RESET_AFTER) {
+				refreshCount = 0;
+				startedAt = Date.now();
+				localStorage.setItem('supportRefreshCount', 0);
+				localStorage.setItem('supportStartedAt', startedAt);
+			}
+
+			refreshCount++;
+			localStorage.setItem('supportRefreshCount', refreshCount);
+
+			const ticketRow = document.getElementById('ticketRow');
+			const ticketIcon = document.getElementById('ticketIcon');
+			const statusBadge = document.getElementById('statusBadge');
+
+			if (refreshCount >= 4) {
+				ticketRow.className = 'ticket-row state-resolved';
+				ticketIcon.textContent = '✅';
+				statusBadge.textContent = 'Resolved';
+				statusBadge.className = 'status-badge badge-resolved';
+			} else {
+				ticketRow.className = 'ticket-row';
+				ticketIcon.textContent = '🎫';
+				statusBadge.textContent = 'Pending';
+				statusBadge.className = 'status-badge badge-pending';
+			}
+		</script>
+	</body>
+</html>

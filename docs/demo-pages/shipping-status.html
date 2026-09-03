@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ops Dashboard - Shipping</title>
+		<style>
+			body {
+				font-family:
+					-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+					Arial, sans-serif;
+				background-color: #f0f4f8;
+				margin: 0;
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+				min-height: 100vh;
+				padding: 60px 20px;
+				box-sizing: border-box;
+			}
+			.dashboard {
+				width: 100%;
+				max-width: 460px;
+			}
+			.tab-nav {
+				display: flex;
+				gap: 6px;
+				margin-bottom: 14px;
+				background-color: #e2e8f0;
+				border-radius: 10px;
+				padding: 4px;
+			}
+			.tab-nav a {
+				flex: 1;
+				text-align: center;
+				padding: 8px 0;
+				border-radius: 7px;
+				font-size: 0.8rem;
+				font-weight: 600;
+				text-decoration: none;
+				color: #627d98;
+			}
+			.tab-nav a.current {
+				background-color: #ffffff;
+				color: #1d3557;
+				box-shadow: 0 1px 3px rgba(29, 53, 87, 0.15);
+			}
+			.card {
+				background-color: #ffffff;
+				border-radius: 16px;
+				padding: 32px;
+				box-shadow: 0 10px 25px rgba(29, 53, 87, 0.1);
+				border: 1px solid #e1e8ed;
+				box-sizing: border-box;
+			}
+			.card h1 {
+				font-size: 1.4rem;
+				color: #1d3557;
+				margin: 0 0 4px 0;
+				font-weight: 700;
+			}
+			.card .subtitle {
+				color: #627d98;
+				margin: 0 0 24px 0;
+				font-size: 0.9rem;
+			}
+			.route-line {
+				position: relative;
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 24px;
+				padding: 0 4px;
+			}
+			.route-line::before {
+				content: '';
+				position: absolute;
+				left: 8px;
+				right: 8px;
+				top: 7px;
+				height: 3px;
+				background-color: #e2e8f0;
+			}
+			.route-line .fill {
+				position: absolute;
+				left: 8px;
+				top: 7px;
+				height: 3px;
+				width: 0%;
+				background-color: #4299e1;
+				transition: width 0.4s ease;
+			}
+			.route-line.state-transit .fill {
+				width: 50%;
+			}
+			.route-line.state-delivered .fill {
+				width: auto;
+				right: 8px;
+			}
+			.stop {
+				position: relative;
+				z-index: 1;
+				width: 16px;
+				height: 16px;
+				border-radius: 50%;
+				background-color: #cbd5e0;
+				border: 2px solid #ffffff;
+				transition: background-color 0.3s ease;
+			}
+
+			.route-line.state-transit .stop:nth-child(-n + 3),
+			.route-line.state-delivered .stop {
+				background-color: #4299e1;
+			}
+			.status-summary {
+				background-color: #f7fafc;
+				border-radius: 8px;
+				padding: 12px 16px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 0.9rem;
+				color: #4a5568;
+			}
+			.status-badge {
+				font-weight: 700;
+				font-size: 0.8rem;
+				padding: 4px 12px;
+				border-radius: 6px;
+				text-transform: uppercase;
+			}
+			.badge-transit {
+				color: #2b6cb0;
+				background-color: #ebf8ff;
+			}
+			.badge-delivered {
+				color: #22543d;
+				background-color: #c6f6d5;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="dashboard">
+			<nav class="tab-nav">
+				<a href="warehouse-status.html">Warehouse</a>
+				<a href="shipping-status.html" class="current">Shipping</a>
+				<a href="support-queue.html">Support</a>
+			</nav>
+
+			<div class="card">
+				<h1>Shipping Status</h1>
+				<p class="subtitle">Tracking #SH-88214-KE</p>
+				<div class="route-line" id="routeLine">
+					<div class="fill"></div>
+					<div class="stop"></div>
+					<div class="stop"></div>
+					<div class="stop"></div>
+				</div>
+				<div class="status-summary">
+					<span>Current Status:</span>
+					<span class="status-badge" id="statusBadge">In Transit</span>
+				</div>
+			</div>
+		</div>
+		<script>
+			const RESET_AFTER = 60 * 1000; // 1 minute
+			let refreshCount = Number(
+				localStorage.getItem('shippingRefreshCount') || 0,
+			);
+			let startedAt = Number(localStorage.getItem('shippingStartedAt') || 0);
+
+			if (!startedAt || Date.now() - startedAt >= RESET_AFTER) {
+				refreshCount = 0;
+				startedAt = Date.now();
+				localStorage.setItem('shippingRefreshCount', 0);
+				localStorage.setItem('shippingStartedAt', startedAt);
+			}
+
+			refreshCount++;
+			localStorage.setItem('shippingRefreshCount', refreshCount);
+
+			const routeLine = document.getElementById('routeLine');
+			const statusBadge = document.getElementById('statusBadge');
+
+			if (refreshCount >= 4) {
+				routeLine.className = 'route-line state-delivered';
+				statusBadge.textContent = 'Delivered';
+				statusBadge.className = 'status-badge badge-delivered';
+			} else {
+				routeLine.className = 'route-line state-transit';
+				statusBadge.textContent = 'In Transit';
+				statusBadge.className = 'status-badge badge-transit';
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Application Portal</title>
+
+		<style>
+			body {
+				font-family:
+					-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+					Arial, sans-serif;
+				background-color: #f0f4f8;
+				margin: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+			}
+			.portal-card {
+				width: 100%;
+				max-width: 440px;
+				padding: 35px;
+				background-color: #ffffff;
+				border-radius: 16px;
+				box-shadow: 0 10px 25px rgba(29, 53, 87, 0.1);
+				border: 1px solid #e1e8ed;
+			}
+			.portal-card h1 {
+				font-size: 1.6rem;
+				color: #1d3557;
+				margin: 0 0 8px 0;
+				font-weight: 700;
+			}
+			.portal-card .subtitle {
+				color: #627d98;
+				margin: 0 0 30px 0;
+				font-size: 0.95rem;
+			}
+
+			.tracker {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: 25px;
+				position: relative;
+			}
+			.tracker::before {
+				content: '';
+				position: absolute;
+				left: 10%;
+				right: 10%;
+				top: 15px;
+				height: 4px;
+				background-color: #e2e8f0;
+				z-index: 1;
+			}
+			.tracker-bar {
+				position: absolute;
+				left: 10%;
+				width: 0%;
+				top: 15px;
+				height: 4px;
+				background-color: #48bb78;
+				z-index: 2;
+				transition: width 0.4s ease;
+			}
+
+			.step {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				position: relative;
+				z-index: 3;
+				width: 80px;
+			}
+
+			.circle {
+				width: 32px;
+				height: 32px;
+				border-radius: 50%;
+				background-color: #e2e8f0;
+				color: #718096;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: bold;
+				font-size: 0.85rem;
+				margin-bottom: 8px;
+				border: 3px solid #ffffff;
+				transition: all 0.3s ease;
+			}
+
+			.step-label {
+				font-size: 0.75rem;
+				font-weight: 600;
+				color: #a0aec0;
+				text-align: center;
+			}
+
+			.portal-card.state-accepted .tracker-bar {
+				width: 80%;
+			}
+
+			.step.active .circle {
+				background-color: #3182ce;
+				color: #ffffff;
+				box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+			}
+			.step.active .step-label {
+				color: #2b6cb0;
+			}
+
+			.step.completed .circle {
+				background-color: #48bb78;
+				color: #ffffff;
+			}
+			.step.completed .step-label {
+				color: #2f855a;
+			}
+
+			.status-summary {
+				background-color: #f7fafc;
+				border-radius: 8px;
+				padding: 12px 16px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 0.9rem;
+				color: #4a5568;
+			}
+
+			.status-badge {
+				font-weight: 700;
+				font-size: 0.8rem;
+				padding: 4px 12px;
+				border-radius: 6px;
+				text-transform: uppercase;
+			}
+
+			.badge-review {
+				color: #b7791f;
+				background-color: #fefcbf;
+			}
+
+			.badge-accepted {
+				color: #22543d;
+				background-color: #c6f6d5;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="portal-card" id="portalCard">
+			<h1>Application Portal</h1>
+			<p class="subtitle">University Admission Fall Semester</p>
+
+			<div class="tracker">
+				<div class="tracker-bar"></div>
+
+				<div class="step completed">
+					<div class="circle">1</div>
+					<div class="step-label">Submitted</div>
+				</div>
+
+				<div class="step" id="stepReview">
+					<div class="circle">2</div>
+					<div class="step-label">Under Review</div>
+				</div>
+
+				<div class="step" id="stepAccepted">
+					<div class="circle">3</div>
+					<div class="step-label">Decision</div>
+				</div>
+			</div>
+
+			<div class="status-summary">
+				<span>Current Status:</span>
+				<span class="status-badge" id="statusBadge">Under Review</span>
+			</div>
+		</div>
+
+		<script>
+			const RESET_AFTER = 60 * 1000; // 1 minute
+
+			let refreshCount = Number(localStorage.getItem('appRefreshCount') || 0);
+			let startedAt = Number(localStorage.getItem('appStartedAt') || 0);
+
+			if (!startedAt || Date.now() - startedAt >= RESET_AFTER) {
+				refreshCount = 0;
+				startedAt = Date.now();
+				localStorage.setItem('appRefreshCount', 0);
+				localStorage.setItem('appStartedAt', startedAt);
+			}
+
+			refreshCount++;
+			localStorage.setItem('appRefreshCount', refreshCount);
+
+			// Target active elements
+			const card = document.getElementById('portalCard');
+			const stepReview = document.getElementById('stepReview');
+			const stepAccepted = document.getElementById('stepAccepted');
+			const statusBadge = document.getElementById('statusBadge');
+
+			// Status update logic based on refresh iterations
+			if (refreshCount >= 4) {
+				card.className = 'portal-card state-accepted';
+				stepReview.className = 'step completed';
+				stepAccepted.className = 'step completed';
+				statusBadge.textContent = 'Accepted';
+				statusBadge.className = 'status-badge badge-accepted';
+			} else {
+				card.className = 'portal-card state-review';
+				stepReview.className = 'step active';
+				stepAccepted.className = 'step';
+				statusBadge.textContent = 'Under Review';
+				statusBadge.className = 'status-badge badge-review';
+			}
+		</script>
+	</body>
+</html>

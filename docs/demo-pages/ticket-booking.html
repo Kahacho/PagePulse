@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ticket Booking</title>
+
+		<style>
+			body {
+				font-family:
+					-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+					Arial, sans-serif;
+				background-color: #f0f4f8;
+				margin: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+			}
+
+			.ticket-card {
+				width: 100%;
+				max-width: 440px;
+				padding: 35px;
+				background-color: #ffffff;
+				border-radius: 16px;
+				box-shadow: 0 10px 25px rgba(29, 53, 87, 0.1);
+				border: 1px solid #e1e8ed;
+				box-sizing: border-box;
+			}
+			.ticket-header {
+				border-bottom: 2px dashed #e2e8f0;
+				padding-bottom: 20px;
+				margin-bottom: 25px;
+				position: relative;
+			}
+			.ticket-card h1 {
+				font-size: 1.6rem;
+				color: #1d3557;
+				margin: 0 0 8px 0;
+				font-weight: 700;
+			}
+			.ticket-card .subtitle {
+				color: #627d98;
+				margin: 0;
+				font-size: 0.95rem;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			.event-details {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 16px;
+				margin-bottom: 25px;
+			}
+
+			.detail-group {
+				display: flex;
+				flex-direction: column;
+			}
+
+			.detail-label {
+				font-size: 0.75rem;
+				font-weight: 600;
+				color: #a0aec0;
+				text-transform: uppercase;
+				margin-bottom: 4px;
+			}
+
+			.detail-value {
+				font-size: 0.95rem;
+				font-weight: 600;
+				color: #4a5568;
+			}
+
+			.status-summary {
+				background-color: #f7fafc;
+				border-radius: 8px;
+				padding: 14px 16px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 0.95rem;
+				color: #4a5568;
+			}
+			.status-badge {
+				font-weight: 700;
+				font-size: 0.8rem;
+				padding: 5px 14px;
+				border-radius: 6px;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			.badge-available {
+				color: #22543d;
+				background-color: #c6f6d5;
+				border: 1px solid #81e6d9;
+			}
+			.badge-sold-out {
+				color: #742a2a;
+				background-color: #fff5f5;
+				border: 1px solid #feb2b2;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="ticket-card">
+			<div class="ticket-header">
+				<p class="subtitle">Admission Pass</p>
+				<h1>Concert Ticket</h1>
+			</div>
+
+			<div class="event-details">
+				<div class="detail-group">
+					<span class="detail-label">Event</span>
+					<span class="detail-value">Saturday Night Live</span>
+				</div>
+
+				<div class="detail-group">
+					<span class="detail-label">Venue</span>
+					<span class="detail-value">Main Arena, Hall A</span>
+				</div>
+			</div>
+
+			<div class="status-summary">
+				<span>Availability Status:</span>
+				<span class="status-badge" id="statusBadge">Available</span>
+			</div>
+		</div>
+
+		<script>
+			const RESET_AFTER = 60 * 1000; // 1 minute
+
+			let refreshCount = Number(localStorage.getItem('refreshCount') || 0);
+			let startedAt = Number(localStorage.getItem('startedAt') || 0);
+
+			if (!startedAt || Date.now() - startedAt >= RESET_AFTER) {
+				refreshCount = 0;
+				startedAt = Date.now();
+				localStorage.setItem('refreshCount', 0);
+				localStorage.setItem('startedAt', startedAt);
+			}
+
+			refreshCount++;
+			localStorage.setItem('refreshCount', refreshCount);
+
+			const statusBadge = document.getElementById('statusBadge');
+
+			if (refreshCount >= 4) {
+				statusBadge.textContent = 'Sold Out';
+				statusBadge.className = 'status-badge badge-sold-out';
+			} else {
+				statusBadge.textContent = 'Available';
+				statusBadge.className = 'status-badge badge-available';
+			}
+		</script>
+	</body>
+</html>

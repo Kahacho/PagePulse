@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+html:has(.dark-mode) {
+	background: #0f172a;
+}
+html:has(.extension-container):not(:has(.dark-mode)) {
+	background: #ffffff;
+}
+
+#app {
+	display: contents;
+}
