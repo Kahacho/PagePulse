@@ -1,8 +1,8 @@
 {
 	"manifest_version": 3,
-	"name": "PagePulse",
+	"name": "PagePulse - Tab Auto Refresh",
 	"version": "1.0.0",
-	"description": "Auto-refresh any page on a schedule, or watch for a keyword and stop the moment it appears. Works per-page, with light and dark themes.",
+	"description": "Auto-refresh any page on a schedule, or watch for a keyword and stop the moment it appears. Light and dark themes.",
 	"permissions": [
 		"tabs",
 		"activeTab",
