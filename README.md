@@ -4,6 +4,9 @@
 
 A browser extension that reloads a page for you and watches for the moment something actually changes, then stops and tells you, instead of leaving you to babysit a tab.
 
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Install-blue?logo=googlechrome)](https://chromewebstore.google.com/detail/pagepulse-tab-auto-refres/bbbghflncphjaplhgblchimmkpfokjnd)
+[![Firefox Add-ons](https://img.shields.io/badge/Firefox%20Add--ons-Install-orange?logo=firefoxbrowser)](https://addons.mozilla.org/en-US/firefox/addon/pagepulse-tab-auto-refresh/)
+
 ![PagePulse popup](docs/media/light-mode.png)
 
 ## Browser Support
