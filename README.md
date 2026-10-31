@@ -40,7 +40,7 @@ PagePulse was built around a different idea: tell it what you are waiting for, a
 
 ![Light mode](docs/media/light-mode.png)
 
-### Dark Mode with Randomised Time Unit and Target Keyword(s)
+### Dark Mode with Refresh Without Cache, Randomised Time Unit, and Target Keyword(s)
 
 ![Dark mode](docs/media/dark-mode.png)
 
