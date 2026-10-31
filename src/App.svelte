@@ -13,6 +13,7 @@
 	let timeUnit = $state<string>('sec');
 	let keyword = $state<string>('');
 	let notifySound = $state<boolean>(false);
+	let bypassCache = $state<boolean>(false);
 
 	// Randomised interval range, used when randomisation is enabled.
 	let isRandomised = $state<boolean>(false);
@@ -135,6 +136,8 @@
 								if (response.keyword) keyword = response.keyword;
 								if (response.notifySound !== undefined)
 									notifySound = response.notifySound;
+								if (response.bypassCache !== undefined)
+									bypassCache = response.bypassCache;
 								if (response.randomised !== undefined)
 									isRandomised = response.randomised;
 								if (response.range) {
@@ -217,6 +220,7 @@
 					unit: timeUnit,
 					keyword: keyword.trim(),
 					notifySound,
+					bypassCache,
 					randomised: isRandomised,
 					range: { start: randomStart, end: randomEnd },
 				},
@@ -457,6 +461,18 @@
 				</div>
 			</div>
 		{/if}
+	</div>
+
+	<div class="sound-toggle-row">
+		<label class="toggle-switch">
+			<input
+				type="checkbox"
+				bind:checked={bypassCache}
+				disabled={isRunning && !isPaused}
+			/>
+			<span class="toggle-track"><span class="toggle-thumb"></span></span>
+			<span class="toggle-text">Refresh without cache</span>
+		</label>
 	</div>
 
 	{#if isRestrictedPage}

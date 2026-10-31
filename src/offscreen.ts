@@ -7,7 +7,7 @@
  * page and does not use this document.
  */
 
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener((message: { action: string }) => {
 	if (message.action === 'PLAY_SOUND') {
 		const audio = new Audio(chrome.runtime.getURL('success.mp3'));
 		// Playback may be rejected when the browser has no recent user gesture.
