@@ -4,8 +4,11 @@
 
 A browser extension that reloads a page for you and watches for the moment something actually changes, then stops and tells you, instead of leaving you to babysit a tab.
 
+## Get PagePulse
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Install-blue?logo=googlechrome)](https://chromewebstore.google.com/detail/pagepulse-tab-auto-refres/bbbghflncphjaplhgblchimmkpfokjnd)
 [![Firefox Add-ons](https://img.shields.io/badge/Firefox%20Add--ons-Install-orange?logo=firefoxbrowser)](https://addons.mozilla.org/en-US/firefox/addon/pagepulse-tab-auto-refresh/)
+
+Brave, Edge and other Chromium-based browsers can install from the Chrome Web Store listing.
 
 ![PagePulse popup](docs/media/light-mode.png)
 
@@ -132,7 +135,7 @@ Then open any of the files above (e.g. `http://localhost:8000/application-portal
 - **[Svelte 5](https://svelte.dev)** (runes) for the popup UI. The extension has a single view with no routing or SSR requirements, so SvelteKit would have been unnecessary.
 - **[Vite](https://vite.dev)** as the build tool, configured to output a browser-extension-shaped `build/` directory rather than a typical web app bundle.
 - **[TypeScript](https://www.typescriptlang.org/)** throughout.
-- **[Tailwind CSS v4](https://tailwindcss.com)** for the small amount of utility styling, alongside hand-written component CSS for the rest.
+- **[Tailwind CSS v4](https://tailwindcss.com)** for its base reset; all component styling is hand-written CSS.
 - **[Manifest V3](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3)**, with separate manifests for Chromium-based browsers and Firefox (they don't agree on how backgrounds are declared, [more below](#manifest-split)).
 - **[Bun](https://bun.sh/)** as the package manager and script runner.
 
