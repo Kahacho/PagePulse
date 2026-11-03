@@ -42,8 +42,16 @@ function watchKey(tabId: number, url: string | undefined): string {
 	return `${tabId}::${normaliseUrl(url)}`;
 }
 
+// Builds a stable configuration key independent of the tab ID.
+function configKey(url: string | undefined): string {
+	return normaliseUrl(url) ?? '';
+}
+
 // Persists the latest configuration for a page watch.
-function saveLastConfig(key: string, config: WatchConfig): void {
+function saveLastConfig(url: string | undefined, config: WatchConfig): void {
+	const key = configKey(url);
+	if (!key) return;
+
 	lastConfig[key] = config;
 	chrome.storage.local.set({ lastConfig });
 }
@@ -184,7 +192,7 @@ chrome.runtime.onMessage.addListener(
 					notifySound!,
 					bypassCache ?? false,
 				);
-				saveLastConfig(key, {
+				saveLastConfig(tab.url, {
 					interval: interval!,
 					unit: unit!,
 					keyword: keyword!,
@@ -216,7 +224,7 @@ chrome.runtime.onMessage.addListener(
 				chrome.storage.local.get(['lastConfig'], (result) => {
 					const remembered = (
 						(result.lastConfig || {}) as Record<string, WatchConfig>
-					)[key];
+					)[configKey(tab.url)];
 					const response: StatusResponse = {
 						isRunning: !!active,
 						isPaused: false,
@@ -281,7 +289,7 @@ chrome.commands.onCommand.addListener((command: string) => {
 		chrome.storage.local.get(['lastConfig'], (result) => {
 			const remembered: WatchConfig = (
 				(result.lastConfig || {}) as Record<string, WatchConfig>
-			)[key] || {
+			)[configKey(tab.url)] || {
 				interval: 10,
 				unit: 'sec',
 				keyword: '',
@@ -314,7 +322,7 @@ chrome.commands.onCommand.addListener((command: string) => {
 				remembered.notifySound,
 				remembered.bypassCache ?? false,
 			);
-			saveLastConfig(key, remembered);
+			saveLastConfig(tab.url, remembered);
 		});
 	});
 });
